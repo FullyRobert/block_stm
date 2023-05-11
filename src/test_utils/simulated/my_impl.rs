@@ -58,9 +58,6 @@ impl<'a> VM for ParallelVM<'a> {
             <Self::T as Transaction>::Value,
         >,
     ) -> Result<Self::Output, Self::Error> {
-        #[cfg(feature = "benchmark")]
-        std::thread::sleep(std::time::Duration::from_micros(100));
-
         let read = |k| match view.read(k) {
             ReadResult::Value(v) => Ok(*v),
             ReadResult::NotFound => Ok(*self.0.get(k).unwrap()),
@@ -68,6 +65,8 @@ impl<'a> VM for ParallelVM<'a> {
         let from_balance = read(&txn.from)?;
         let output = if from_balance >= txn.money {
             let to_balance = read(&txn.to)?;
+            #[cfg(feature = "benchmark")]
+            std::thread::sleep(std::time::Duration::from_micros(100));
             vec![
                 (txn.from, from_balance - txn.money),
                 (txn.to, to_balance + txn.money),

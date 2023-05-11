@@ -4,6 +4,8 @@
 pub mod core;
 mod executor;
 mod mvmemory;
+/// use to reorder txns to get tps improve
+pub mod reorder;
 mod scheduler;
 /// test utils used by benches and tests
 pub mod test_utils;

@@ -79,9 +79,6 @@ impl<'a> ExecutorTask for ParallelVM<'a> {
         view: &MVHashMapView<<Self::T as Transaction>::Key, <Self::T as Transaction>::Value>,
         txn: &Self::T,
     ) -> ExecutionStatus<Self::Output, Self::Error> {
-        #[cfg(feature = "benchmark")]
-        std::thread::sleep(std::time::Duration::from_micros(100));
-
         let read = |key| match view.read(key) {
             ReadResult::Value(value) => (*value).0,
             ReadResult::None => *self.0.get(&key.0).expect("get error"),
@@ -91,6 +88,8 @@ impl<'a> ExecutorTask for ParallelVM<'a> {
         let from_balance = read(&txn_from);
         let output = if from_balance >= txn.money {
             let to_balance = read(&txn.to.into());
+            #[cfg(feature = "benchmark")]
+            std::thread::sleep(std::time::Duration::from_micros(100));
             vec![
                 (txn.from, from_balance - txn.money),
                 (txn.to, to_balance + txn.money),
