@@ -1,7 +1,7 @@
-use std::time::Instant;
+use std::{collections::HashSet, time::Instant};
 
 use crate::{
-    core::{Transaction, TransactionOutput, ValueBytes, VM},
+    core::{Transaction, TransactionOutput, TransactionRwSet, ValueBytes, VM},
     mvmemory::ReadResult,
     test_utils::BenchmarkInfo,
     ParallelExecutor,
@@ -22,6 +22,15 @@ impl ValueBytes for <TransferTransaction as Transaction>::Value {
     fn deserialize(bytes: &[u8]) -> Self {
         let bytes: [u8; 8] = bytes.try_into().unwrap();
         usize::from_ne_bytes(bytes)
+    }
+}
+impl TransactionRwSet for TransferTransaction {
+    type Address = usize;
+    fn read_set(&self) -> HashSet<Self::Address> {
+        vec![self.from, self.to].into_iter().collect()
+    }
+    fn write_set(&self) -> HashSet<Self::Address> {
+        vec![self.from, self.to].into_iter().collect()
     }
 }
 impl TransactionOutput for TransferTransactionOutput {

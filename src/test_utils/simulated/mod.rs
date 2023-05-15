@@ -15,7 +15,7 @@ pub use my_impl::my_parallel_execute;
 
 use super::BenchmarkInfo;
 ///
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct TransferTransaction {
     /// transfer money from
     pub from: usize,

@@ -52,6 +52,11 @@ name = "simulated"
 harness = false
 required-features = ["simulated_transfer", "benchmark"]
 
+[[bench]]
+name = "reorder"
+harness = false
+required-features = ["simulated_transfer", "benchmark"]
+
 [features]
 aptos_pkgs = [
     "aptos_e2e_tests",

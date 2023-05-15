@@ -1,4 +1,4 @@
-use std::{fmt::Debug, hash::Hash};
+use std::{collections::HashSet, fmt::Debug, hash::Hash};
 
 use crate::mvmemory::MVMemoryView;
 /// trait used to serialize/deserialize Value
@@ -62,4 +62,14 @@ pub trait VM: Sync {
         txn: &Self::T,
         view: &MVMemoryView<<Self::T as Transaction>::Key, <Self::T as Transaction>::Value>,
     ) -> Result<Self::Output, Self::Error>;
+}
+
+/// A trait to get Transaction's read and write address set
+pub trait TransactionRwSet {
+    /// The Address that transaction need to visit
+    type Address: Eq + Hash + Clone + Send + Sync + Debug;
+    /// Return the read account address set of txns  
+    fn read_set(&self) -> HashSet<Self::Address>;
+    /// Return the read account address set of txns  
+    fn write_set(&self) -> HashSet<Self::Address>;
 }
